@@ -7,9 +7,6 @@ import "react-rater/lib/react-rater.css";
 import avatarImg from "../../assets/avatar.jpg";
 import instructorImg from "../../assets/instructor.jpg";
 
-// Then in your JSX:
-<img src={instructorImg} alt="Instructor" />;
-
 import useAxios from "../../utils/useAxios";
 import CartId from "../plugin/CartId";
 import GetCurrentAddress from "../plugin/UserCountry";
@@ -36,6 +33,7 @@ function Index() {
       });
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
@@ -103,29 +101,22 @@ function Index() {
       <BaseHeader />
 
       <section className="py-lg-8 py-5">
-        {/* container */}
         <div className="container my-lg-8">
-          {/* row */}
           <div className="row align-items-center">
-            {/* col */}
             <div className="col-lg-6 mb-6 mb-lg-0">
               <div>
-                {/* heading */}
                 <h5 className="text-dark mb-4">
                   <i className="fe fe-check icon-xxs icon-shape bg-light-success text-success rounded-circle me-2" />
                   Most trusted education platform
                 </h5>
-                {/* heading */}
                 <h1 className="display-3 fw-bold mb-3">
                   Grow your skills and advance career
                 </h1>
-                {/* para */}
                 <p className="pe-lg-10 mb-5">
                   Start, switch, or advance your career with more than 5,000
                   courses, Professional Certificates, and degrees from
                   world-class universities and companies.
                 </p>
-                {/* btn */}
                 <a href="#" className="btn btn-primary fs-4 text-inherit ms-3">
                   Join Free Now <i className="fas fa-plus"></i>
                 </a>
@@ -137,9 +128,7 @@ function Index() {
                 </a>
               </div>
             </div>
-            {/* col */}
             <div className="col-lg-6 d-flex justify-content-center">
-              {/* images */}
               <div className="position-relative">
                 <img
                   src="https://desphixs.com/geeks/assets/images/background/acedamy-img/girl-image.png"
@@ -154,10 +143,8 @@ function Index() {
 
       <section className="pb-8">
         <div className="container mb-lg-8">
-          {/* row */}
           <div className="row mb-5">
             <div className="col-md-6 col-lg-3 border-top-md border-top pb-4  border-end-md">
-              {/* text */}
               <div className="py-7 text-center">
                 <div className="mb-3">
                   <i className="fe fe-award fs-2 text-info" />
@@ -169,12 +156,10 @@ function Index() {
               </div>
             </div>
             <div className="col-md-6 col-lg-3 border-top-md border-top border-end-lg">
-              {/* icon */}
               <div className="py-7 text-center">
                 <div className="mb-3">
                   <i className="fe fe-users fs-2 text-warning" />
                 </div>
-                {/* text */}
                 <div className="lh-1">
                   <h2 className="mb-1">1.8 Billion+</h2>
                   <span>Course enrolments</span>
@@ -182,12 +167,10 @@ function Index() {
               </div>
             </div>
             <div className="col-md-6 col-lg-3 border-top-lg border-top border-end-md">
-              {/* icon */}
               <div className="py-7 text-center">
                 <div className="mb-3">
                   <i className="fe fe-tv fs-2 text-primary" />
                 </div>
-                {/* text */}
                 <div className="lh-1">
                   <h2 className="mb-1">41,000+</h2>
                   <span>Courses in 42 languages</span>
@@ -195,12 +178,10 @@ function Index() {
               </div>
             </div>
             <div className="col-md-6 col-lg-3 border-top-lg border-top">
-              {/* icon */}
               <div className="py-7 text-center">
                 <div className="mb-3">
                   <i className="fe fe-film fs-2 text-success" />
                 </div>
-                {/* text */}
                 <div className="lh-1">
                   <h2 className="mb-1">179,000+</h2>
                   <span>Online Videos</span>
@@ -214,7 +195,6 @@ function Index() {
       <section className="mb-5">
         <div className="container mb-lg-8 ">
           <div className="row mb-5 mt-3">
-            {/* col */}
             <div className="col-12">
               <div className="mb-6">
                 <h2 className="mb-1 h1">🔥Most Popular Courses</h2>
@@ -229,7 +209,7 @@ function Index() {
             <div className="col-md-12">
               <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                 {currentItems?.map((c, index) => (
-                  <div className="col">
+                  <div className="col" key={index}>
                     {/* Card */}
                     <div className="card card-hover">
                       <Link to={`/course-detail/${c.slug}/`}>
@@ -256,22 +236,23 @@ function Index() {
                           <a
                             onClick={() => addToWishlist(c.id)}
                             className="fs-5"
+                            style={{ cursor: "pointer" }}
                           >
                             <i className="fas fa-heart text-danger align-middle" />
                           </a>
                         </div>
                         <h4 className="mb-2 text-truncate-line-2 ">
                           <Link
-                            to={`/course-detail/slug/`}
+                            to={`/course-detail/${c.slug}/`}
                             className="text-inherit text-decoration-none text-dark fs-5"
                           >
                             {c.title}
                           </Link>
                         </h4>
-                        <small>By: {c.teacher.full_name}</small> <br />
+                        <small>By: {c.teacher?.full_name}</small> <br />
                         <small>
-                          {c.students?.length} Student
-                          {c.students?.length > 1 && "s"}
+                          {c.students?.length || 0} Student
+                          {c.students?.length !== 1 && "s"}
                         </small>{" "}
                         <br />
                         <div className="lh-1 mt-3 d-flex">
@@ -280,9 +261,11 @@ function Index() {
                               <Rater total={5} rating={c.average_rating || 0} />
                             </span>
                           </span>
-                          <span className="text-warning">4.5</span>
+                          <span className="text-warning ms-2">
+                            {c.average_rating || 0}
+                          </span>
                           <span className="fs-6 ms-2">
-                            ({c.reviews?.length} Reviews)
+                            ({c.reviews?.length || 0} Reviews)
                           </span>
                         </div>
                       </div>
@@ -309,7 +292,7 @@ function Index() {
                               <i className="fas fa-shopping-cart text-primary text-white" />
                             </button>
                             <Link
-                              to={""}
+                              to={`/course-detail/${c.slug}/`}
                               className="text-inherit text-decoration-none btn btn-primary"
                             >
                               Enroll Now{" "}
@@ -372,17 +355,12 @@ function Index() {
       </section>
 
       <section className="my-8 py-lg-8">
-        {/* container */}
         <div className="container">
-          {/* row */}
           <div className="row align-items-center bg-primary gx-0 rounded-3 mt-5">
-            {/* col */}
             <div className="col-lg-6 col-12 d-none d-lg-block">
               <div className="d-flex justify-content-center pt-4">
-                {/* img */}
                 <div className="position-relative">
                   <div className="ms-n8 position-absolute bottom-0 start-0 mb-6"></div>
-                  {/* img */}
                   <div className="me-n4 position-absolute top-0 end-0">
                     <img
                       src={instructorImg}
@@ -403,7 +381,6 @@ function Index() {
             </div>
             <div className="col-lg-5 col-12">
               <div className="text-white p-5 p-lg-0">
-                {/* text */}
                 <h2 className="h1 text-white">Become an instructor today</h2>
                 <p className="mb-0">
                   Instructors from around the world teach millions of students
@@ -421,13 +398,10 @@ function Index() {
 
       <section className="bg-gray-200 pt-8 pb-8 mt-5">
         <div className="container pb-8">
-          {/* row */}
           <div className="row mb-lg-8 mb-5">
             <div className="offset-lg-1 col-lg-10 col-12">
               <div className="row align-items-center">
-                {/* col */}
                 <div className="col-lg-6 col-md-8">
-                  {/* rating */}
                   <div>
                     <div className="mb-3">
                       <span className="lh-1">
@@ -438,24 +412,23 @@ function Index() {
                           <i className="fas fa-star text-warning"></i>
                           <i className="fas fa-star text-warning"></i>
                         </span>
-                        <span className="text-dark fw-semibold">4.5/5.0</span>
+                        <span className="text-dark fw-semibold ms-2">
+                          4.5/5.0
+                        </span>
                       </span>
                       <span className="ms-2">(Based on 3265 ratings)</span>
                     </div>
-                    {/* heading */}
                     <h2 className="h1">What our students say</h2>
                     <p className="mb-0">
-                      Hear from
-                      <span className="text-dark">teachers</span>,
-                      <span className="text-dark">trainers</span>, and
-                      <span className="text-dark">leaders</span>
-                      in the learning space about how Geeks empowers them to
-                      provide quality online learning experiences.
+                      Hear from <span className="text-dark">teachers</span>,{" "}
+                      <span className="text-dark">trainers</span>, and{" "}
+                      <span className="text-dark">leaders</span> in the learning
+                      space about how Geeks empowers them to provide quality
+                      online learning experiences.
                     </p>
                   </div>
                 </div>
                 <div className="col-lg-6 col-md-4 text-md-end mt-4 mt-md-0">
-                  {/* btn */}
                   <a href="#" className="btn btn-primary">
                     View Reviews
                   </a>
@@ -463,25 +436,25 @@ function Index() {
               </div>
             </div>
           </div>
-          {/* row */}
           <div className="row">
-            {/* col */}
             <div className="col-md-12">
               <div className="position-relative">
-                {/* controls */}
-                {/* slider */}
                 <div className="sliderTestimonial">
-                  {/* item */}
                   <div className="row">
+                    {/* Dummy Testimonial 1 */}
                     <div className="col-lg-4">
                       <div className="item">
                         <div className="card">
                           <div className="card-body text-center p-6">
-                            {/* img */}
                             <img
                               src={avatarImg}
                               alt="Avatar"
-                              style={{ width: "50px", borderRadius: "50%" }}
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
                               className="avatar avatar-lg rounded-circle"
                             />
                             <p className="mb-0 mt-3">
@@ -490,62 +463,14 @@ function Index() {
                               etc generate lorem Ipsum which looks racteristic
                               reasonable.”
                             </p>
-                            {/* rating */}
                             <div className="lh-1 mb-3 mt-4">
-                              <span className="fs-6 align-top">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
+                              <span className="text-warning">
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
                               </span>
-                              <span className="text-warning">5</span>
-                              {/* text */}
                             </div>
                             <h3 className="mb-0 h4">Gladys Colbert</h3>
                             <span>Software Engineer at Palantir</span>
@@ -553,15 +478,21 @@ function Index() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Dummy Testimonial 2 */}
                     <div className="col-lg-4">
                       <div className="item">
                         <div className="card">
                           <div className="card-body text-center p-6">
-                            {/* img */}
                             <img
                               src={avatarImg}
                               alt="Avatar"
-                              style={{ width: "50px", borderRadius: "50%" }}
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
                               className="avatar avatar-lg rounded-circle"
                             />
                             <p className="mb-0 mt-3">
@@ -570,62 +501,14 @@ function Index() {
                               etc generate lorem Ipsum which looks racteristic
                               reasonable.”
                             </p>
-                            {/* rating */}
                             <div className="lh-1 mb-3 mt-4">
-                              <span className="fs-6 align-top">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
+                              <span className="text-warning">
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
                               </span>
-                              <span className="text-warning">5</span>
-                              {/* text */}
                             </div>
                             <h3 className="mb-0 h4">Gladys Colbert</h3>
                             <span>Software Engineer at Palantir</span>
@@ -633,15 +516,21 @@ function Index() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Dummy Testimonial 3 */}
                     <div className="col-lg-4">
                       <div className="item">
                         <div className="card">
                           <div className="card-body text-center p-6">
-                            {/* img */}
                             <img
                               src={avatarImg}
                               alt="Avatar"
-                              style={{ width: "50px", borderRadius: "50%" }}
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
                               className="avatar avatar-lg rounded-circle"
                             />
                             <p className="mb-0 mt-3">
@@ -650,62 +539,14 @@ function Index() {
                               etc generate lorem Ipsum which looks racteristic
                               reasonable.”
                             </p>
-                            {/* rating */}
                             <div className="lh-1 mb-3 mt-4">
-                              <span className="fs-6 align-top">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={11}
-                                  height={11}
-                                  fill="currentColor"
-                                  className="bi bi-star-fill text-warning"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
+                              <span className="text-warning">
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
                               </span>
-                              <span className="text-warning">5</span>
-                              {/* text */}
                             </div>
                             <h3 className="mb-0 h4">Gladys Colbert</h3>
                             <span>Software Engineer at Palantir</span>
