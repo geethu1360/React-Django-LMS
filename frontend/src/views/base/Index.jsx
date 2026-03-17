@@ -6,6 +6,7 @@ import Rater from "react-rater";
 import "react-rater/lib/react-rater.css";
 import avatarImg from "../../assets/avatar.jpg";
 import instructorImg from "../../assets/instructor.jpg";
+import girl from "../../assets/instructor.jpg";
 
 import useAxios from "../../utils/useAxios";
 import CartId from "../plugin/CartId";
@@ -131,8 +132,9 @@ function Index() {
             <div className="col-lg-6 d-flex justify-content-center">
               <div className="position-relative">
                 <img
-                  src="https://desphixs.com/geeks/assets/images/background/acedamy-img/girl-image.png"
+                  src={girl}
                   alt="girl"
+                  style={{ height: "370px", width: "auto" }}
                   className="end-0 bottom-0"
                 />
               </div>
